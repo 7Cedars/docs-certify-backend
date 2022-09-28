@@ -5,7 +5,7 @@ pragma solidity >=0.7.0 <0.9.0;
 NB TODO: General description of contract! 
 */
 
-contract CertifyDocument {
+contract CertifyDoc {
     
     // creates certificate struct. Consists of hash of document, issuer address, recipient address, a description and date of issuance. 
     struct certificate {
@@ -19,7 +19,7 @@ contract CertifyDocument {
     
     // to be able to retrieve certificates per document, issuer or recipient later on, we create three mappings: 
     // a map of certificate indexes per document. (key = docHash, value is index of certificates)   
-    mapping(string => uint[]) public docHashMap;  
+    mapping(string => uint[]) public docHashMap; 
 
     // a map of certificate indexes per issuer. (key = msg.sender, value is index of certificates) 
     mapping(address => uint[]) public issuerMap;   
