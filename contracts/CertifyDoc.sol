@@ -3,23 +3,26 @@ pragma solidity >=0.7.0 <0.9.0;
 
 /*
 NB TODO: General description of contract! 
+NB: https://docs.ethers.io/v5/api/utils/strings/#Bytes32String 
+NB AND: https://docs.ethers.io/v5/api/utils/hashing/!! -- they have hashing algorithms. Of course! 
+-- ethers has a js function to convert hash string to bytes32. THS is what I should use!  
 */
 
 contract CertifyDoc {
     
     // creates certificate struct. Consists of hash of document, issuer address, recipient address, a description and date of issuance. 
     struct certificate {
-        string docHash;
+        bytes32 docHash;
         address issuer;
         address recipient;
-        string description;
         uint datetime;
+        string description;
     }
     certificate[] public certificates; // array of certificates, expands as certificates are issued. 
     
     // to be able to retrieve certificates per document, issuer or recipient later on, we create three mappings: 
     // a map of certificate indexes per document. (key = docHash, value is index of certificates)   
-    mapping(string => uint[]) public docHashMap; 
+    mapping(bytes32 => uint[]) public docHashMap; 
 
     // a map of certificate indexes per issuer. (key = msg.sender, value is index of certificates) 
     mapping(address => uint[]) public issuerMap;   
@@ -28,10 +31,11 @@ contract CertifyDoc {
     mapping(address => uint[]) public recipientMap;
 
     // a map of index to address. (key = string of docHash, value address)
-    mapping(string => address) public docHashOwnerMap;
+    mapping(bytes32 => address) public docHashOwnerMap;
 
     // creating certificates. Note that location of certificate in certificates array is also mapped in relation to docHash, issuer, and recipient.  
-    function certify(string memory _docHash, address _recipient, string memory _description) public {
+    function certify(bytes32 _docHash, address _recipient, string memory _description) public {
+        
         certificate storage newCertificate = certificates.push(); 
         newCertificate.docHash = _docHash; 
         newCertificate.issuer = msg.sender; 
@@ -51,19 +55,21 @@ contract CertifyDoc {
         }
     }
 
-    // Transfer ownership of docHash to another contract. 
-    function changeDocHashOwner(string memory _docHash, address newDocHashOwner) public {
-        require(msg.sender == docHashOwnerMap[_docHash], "You are not the owner of this docHash.");
-        docHashOwnerMap[_docHash] = newDocHashOwner;
-    }
+    // // Transfer ownership of docHash to another contract. -- This is for extended version. 
+    // function changeDocHashOwner(string memory _docHash, address newDocHashOwner) public {
+    //     require(msg.sender == docHashOwnerMap[_docHash], "You are not the owner of this docHash.");
+    //     docHashOwnerMap[_docHash] = newDocHashOwner;
+    // }
     
-    // retrieves index of certificates per docHash, and a bool if the  msg.sender is owner of this docHash. 
-    function checkDocHash(string memory _docHash) public view returns ( uint[] memory, bool ) {  
-        return (
-            docHashMap[_docHash],
-            msg.sender == docHashOwnerMap[_docHash]
-        );
+    // retrieves index of certificates per docHash. 
+    function checkDocHash(bytes32 _docHash) public view returns ( uint[] memory ) {  
+        return (docHashMap[_docHash]);
     } 
+
+    // returns true if the  msg.sender is owner of the docHash.
+    function checkOwner(bytes32 _docHash) public view returns ( bool ) {
+        return (msg.sender == docHashOwnerMap[_docHash]); 
+    }
 
     // retrieves index of certificates per issuer of msg.sender.
     function checkIssuer(address _requestedAddress) public view returns ( uint[] memory ) {  
@@ -74,13 +80,13 @@ contract CertifyDoc {
     function checkRecipient(address _requestedAddress) public view returns ( uint[] memory ) {
         return recipientMap[_requestedAddress];
     }
-    
+
     // Retrieves a single certificate based on index.
     // Idea is that frontend first calls checkDocHash or checkSender, and subsequently does a loop to this function. 
     // This places computational demand on side of frontend, not the blockchain backend. 
     // Note that it IS possible to call certificates at random. Certificates are public! 
     function callCertificate(uint index) public view returns (
-      string memory, address, address, string memory, uint
+      bytes32, address, address, string memory, uint
       ) {
         return (
           certificates[index].docHash,
