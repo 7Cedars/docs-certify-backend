@@ -20,6 +20,9 @@ contract CertifyDoc {
     }
     certificate[] public certificates; // array of certificates, expands as certificates are issued. 
     
+    // event for logging creation of a certificate
+    event CertificateIssued(bytes32 indexed docHash, uint indexed index);
+    
     // to be able to retrieve certificates per document, issuer or recipient later on, we create three mappings: 
     // a map of certificate indexes per document. (key = docHash, value is index of certificates)   
     mapping(bytes32 => uint[]) public docHashMap; 
@@ -46,6 +49,7 @@ contract CertifyDoc {
         docHashMap[_docHash].push(certificates.length);
         issuerMap[msg.sender].push(certificates.length);
         recipientMap[_recipient].push(certificates.length);
+        emit CertificateIssued(_docHash, certificates.length);
 
         // If this is the first time this docHash is being certified, the issuer is set as its owner. 
         // The owner of the docHash can revoke any subsequent certificate linked to this docHash. 
