@@ -37,26 +37,28 @@ contract CertifyDoc {
     mapping(bytes32 => address) public docHashOwnerMap;
 
     // creating certificates. Note that location of certificate in certificates array is also mapped in relation to docHash, issuer, and recipient.  
-    function certify(bytes32 _docHash, address _recipient, string memory _description) public {
-        
-        certificate storage newCertificate = certificates.push(); 
-        newCertificate.docHash = _docHash; 
-        newCertificate.issuer = msg.sender; 
-        newCertificate.recipient = _recipient; 
-        newCertificate.description = _description; 
-        newCertificate.datetime = block.timestamp;
+    function certify(bytes32 _docHash, address _recipient, string memory _description) public {        
 
-        docHashMap[_docHash].push(certificates.length);
-        issuerMap[msg.sender].push(certificates.length);
-        recipientMap[_recipient].push(certificates.length);
-        emit CertificateIssued(_docHash, certificates.length);
+            certificate storage newCertificate = certificates.push(); 
+            newCertificate.docHash = _docHash; 
+            newCertificate.issuer = msg.sender; 
+            newCertificate.recipient = _recipient;  // can I make this optional? 
+            newCertificate.description = _description; // can I make this optional? 
+            newCertificate.datetime = block.timestamp;
 
-        // If this is the first time this docHash is being certified, the issuer is set as its owner. 
-        // The owner of the docHash can revoke any subsequent certificate linked to this docHash. 
-        // docHashOwner is transferrable (see function changeDocHashOwner below). 
-        if (docHashOwnerMap[_docHash] == 0x0000000000000000000000000000000000000000) {
-            docHashOwnerMap[_docHash] = msg.sender;
-        }
+            docHashMap[_docHash].push(certificates.length -1);
+            issuerMap[msg.sender].push(certificates.length -1);
+            recipientMap[_recipient].push(certificates.length -1);
+
+            // If this is the first time this docHash is being certified, the issuer is set as its owner. 
+            // The owner of the docHash can revoke any subsequent certificate linked to this docHash. 
+            // docHashOwner is transferrable (see function changeDocHashOwner below). 
+            if (docHashOwnerMap[_docHash] == 0x0000000000000000000000000000000000000000) {
+                docHashOwnerMap[_docHash] = msg.sender;
+            }
+            
+            // An event is emited when a new certificate is issued. 
+            emit CertificateIssued(_docHash, certificates.length -1); 
     }
 
     // // Transfer ownership of docHash to another contract. -- This is for extended version. 
