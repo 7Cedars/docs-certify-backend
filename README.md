@@ -1,4 +1,4 @@
-This is the **backend** of a simple dapp project: certify.doc. The github repository for the frontend can be found [here]().
+This is the **backend** of a simple dapp project: certify.doc. The github repository for the frontend can be found [here](https://github.com/7Cedars/docs-certify-frontend.git).
 
 The dapp provides a single utility. It issues records on the blockchain that relate two ethereum addresses (an issuer and recipient address) to the hash of a digital offline document. 
 They are somewhat similar to non-fungible tokens (NFTs).
@@ -12,11 +12,11 @@ Because these records immutable, non-tradable and revokable, they can be used by
 Because these records are related to an offline document that can be send via email, social media or any other traditional method, it is extremely accesible to those that are not familiar with blockchain technology. 
 
 ## Getting Started
-To view and use the deployed dapp, please visit its deployed instance on vercel: [http://localhost:3000](http://localhost:3000). Please note that the dapp only runs on the Goerli Ethereum test network.
+To view and use the deployed dapp, please visit its deployed instance on vercel: [https://docs-certify-frontend-9iop.vercel.app/](https://docs-certify-frontend-9iop.vercel.app/). Please note that the dapp only runs on the Goerli Ethereum test network.
 
 To view and run the contract locally, see the file at: hardhat/contracts/CertifyDoc.sol. The Remix IDE is arguabbly the easiest way to locally run and test the contract. 
 
-The address of the deployed contract on the goerli ethereum test network is ADDRESS HERE. 
+The address of the deployed contract on the goerli ethereum test network is 0xB4AfD5AA80a7D8e01BF3e7F3C8E3917a1De3790f. 
 
 The repository also includes a simple testing suite. See hardhat/test/CertifyDocsTest.js.
 
