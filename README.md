@@ -35,4 +35,3 @@ The main reason for this is that I used this app as an educational project while
 - Making use of hashing alg flexible, recording what hashing protocol has been used. 
 - Implement upgradable contract. Making the data slots of certificates flexible, and enabling flexible upgrading of types of certificates - while still enabling backwards compatability. 
 - Enabling use of the Graph on contract (meaning that emitting of events needs to be further developed). 
-- ...  
