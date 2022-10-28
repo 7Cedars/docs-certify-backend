@@ -1,14 +1,20 @@
+/*
+This is a first version of chai tests for the Contract. 
+Not everything is being tested at the moment, so it will still 
+be expanded later on. 
+*/ 
+
 const { anyValue } = require("@nomicfoundation/hardhat-chai-matchers/withArgs");
 const { expect } = require("chai");
 const hre = require("hardhat");
-const { ethers } = require("hardhat");
+const { ethers, network } = require("hardhat");
 
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
+const { Contract } = require("hardhat/internal/hardhat-network/stack-traces/model")
 
 describe("CertifyDoc", function () {
-  // We define a fixture to reuse the same setup in every test.
-  // We use loadFixture to run this setup once, snapshot that state,
-  // and reset Hardhat Network to that snapshot in every test.
+  // Creating two fixtures.
+  // One for deploying contract, and one for issuing certificate. 
   async function deployCertifyDocs() {
 
     // Contracts are deployed using the first signer/account by default
@@ -20,9 +26,6 @@ describe("CertifyDoc", function () {
     return { certifyDoc, owner, otherAccount };
   }
 
-    // We define a fixture to reuse the same setup in every test.
-    // We use loadFixture to run this setup once, snapshot that state,
-    // and reset Hardhat Network to that snapshot in every test.
   async function issueCertificate() {
 
     const { certifyDoc, otherAccount, owner } = await loadFixture(deployCertifyDocs);
